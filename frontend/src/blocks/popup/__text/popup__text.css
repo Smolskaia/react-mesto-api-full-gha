@@ -1,0 +1,16 @@
+.popup__text {
+  margin: 0;
+  padding-top: 32px;
+  padding-bottom: 24px;
+  text-align: center;
+  color: #000000;
+  line-height: 29px;
+}
+
+@media screen and (max-width: 560px) {
+  .popup__text {
+    font-size: 20px;
+    line-height: 24px;
+    padding-top: 40px;
+  }
+}

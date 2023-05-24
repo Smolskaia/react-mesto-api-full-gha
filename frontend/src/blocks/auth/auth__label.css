@@ -1,0 +1,12 @@
+.auth__label {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  border: none;
+  width: 100%;
+  display: block;
+  padding-bottom: 30px;
+  max-height: 27px;
+  color: #CCC;
+  background-color: transparent;
+}
