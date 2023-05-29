@@ -15,7 +15,7 @@ const getUserById = (req, res, next) => {
   // Метод findById ищет запись по идентификатору, то есть свойству _id
   User.findById(req.params.userId)
     .orFail()
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
         return next(new NotFoundError('User with such id is not found'));
@@ -30,7 +30,7 @@ const getUser = (req, res, next) => {
       if (!user) {
         return next(new NotFoundError('User with such id is not found'));
       }
-      return res.send({ data: user });
+      return res.send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -85,7 +85,7 @@ const updateProfile = (req, res, next) => {
     { new: true, runValidators: true },
   )
     .orFail()
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
         return next(new NotFoundError('User with such id is not found'));
@@ -105,7 +105,7 @@ const updateAvatar = (req, res, next) => {
     { new: true, runValidators: true },
   )
     .orFail()
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         next(new BadRequestError('Incorrect avatar data'));

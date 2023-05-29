@@ -1,4 +1,4 @@
-const BASE_URL = "https://auth.nomoreparties.co";
+const BASE_URL = "http://localhost:3000";
 
 // аутентификация(регистрация) пользователя
 // Эндпоинт: /signup      Метод: POST
@@ -17,31 +17,39 @@ export const register = (email, password) =>
 // авторизации(вход) пользователя
 // Эндпоинт: /signin      Метод: POST
 // возвращает token
-export const authorize = (email, password) =>
-  fetch(`${BASE_URL}/signin`, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email, password }),
-  }).then((res) => check(res));
-
-
+export const authorize = (email, password) => {
+  return fetch(`${BASE_URL}/signin`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    })
+    .then((res) => check(res))
+    .then((data) => {
+      localStorage.setItem('jwt', data.token)
+      return data;
+    });
+}
+  
 // проверка валидности токена - вызывается каждый раз при загрузке приложения
 // при успешной проверке мы будем навигейтить в основной раздел
 // и не нужно будет заного вводить логин и пароль
 // Эндпоинт: /users/me      Метод: GET
 // возвращает _id, email
-export const checkToken = (token) =>
-  fetch(`${BASE_URL}/users/me`, {
+export const checkToken = () => {
+  const token = localStorage.getItem('jwt'); 
+  return fetch(`${BASE_URL}/users/me`, {
     method: "GET",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      "Authorization": `Bearer ${token}`,
     },
   }).then((res) => check(res));
+}
+  
 
 // проверка ответа сервера
   function check(res) {

@@ -24,7 +24,7 @@ function EditAvatarPopup(props) {
       avatar: avatarRef.current.value,
     });
   }
-
+  
   const errorClassName = (name) => `popup__input-error ${errors[name] ? 'popup__input-error_active' : ''}`
 
   const onClosePopup = () => {

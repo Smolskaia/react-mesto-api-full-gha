@@ -54,7 +54,7 @@ function App() {
   const [infoTooltipStatus, setInfoTooltipStatus] = useState(false);
   const [infoMessage, setInfoMessage] = useState('')
 
-  const [menuOpened, setMenuOpend] = useState(false);
+  // const [menuOpened, setMenuOpend] = useState(false);
 
   const navigate = useNavigate();
 
@@ -107,38 +107,37 @@ function App() {
   }
 
   // функция проверки токена
-  const tokenCheck =() => {
+    useEffect(() => {
     const token = localStorage.getItem('token')
     if (!token) {
       return
     }
-    auth.checkToken(token)
+    auth.checkToken()
     .then(res => {
       if (res) {
-        handleLogin(res.data.email)
+        handleLogin(res.email)
         // console.log(res.data.email);
         navigate('/')
       }
     })
     .catch((err) => console.log(err));
-  }
-
-  useEffect(() => {
-    tokenCheck()
-  }, [])
+  }, [navigate]);
 
 
   // эффект при монтировании, который будет вызывать
   // api.getUserInfo и обновлять стейт-переменную currentUser
   // из полученного значения
   useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getInitialCards()])
-      .then(([userData, cards]) => {
-        setCurrentUser(userData);
-        setCards(cards);
-      })
-      .catch((err) => console.log(err));
-  }, []);
+    if(loggedIn && email) {
+      Promise.all([api.getUserInfo(), api.getInitialCards()])
+            .then(([userData, cards]) => {
+              setCurrentUser(userData);
+              setCards(cards.reverse());
+            })
+            .catch((err) => console.log(err));
+        }
+    }
+    , [loggedIn, email]);
   // console.log("App rendered");
   // console.log("currentUser =>", currentUser);
   // console.log("cards =>", cards);
@@ -201,13 +200,14 @@ function App() {
 
   // лайк
   function handleCardLike(card) {
+    // console.log(card);
     // проверяем, есть ли уже лайк на этой карточке
-    const isLiked = card.likes.some((user) => user._id === currentUser._id);
-
+    const isLiked = card.likes.some((id) => id === currentUser._id);
     // Отправляем запрос в API и получаем обновлённые данные карточки
     api
       .changeLikeCardStatus(card._id, !isLiked)
       .then((newCard) => {
+        // console.log(newCard);
         // меняем стейт карточек. Поочередно сравниваем id каждой карточки с id карточки
         // на которой нажали лайк, если id совпадают, тогда обновить карточку с метода api
         // если нет - оставь текущущую карточку
@@ -259,8 +259,10 @@ function App() {
     api
       .addNewCard(inputData)
       .then((res) => {
+        // console.log('новая карточка => ', res);
         setCards([res, ...cards]);
         closeAllPopups();
+        
       })
       .catch((err) => console.log(err))
       .finally(() => setIsLoading(false));

@@ -4,7 +4,7 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 function Main(props) {
   const { cards, onEditProfile, onAddPlace, onEditAvatar, onCardClick, onCardLike, onCardDelete } = props;
-
+  // console.log(cards);
   // контекст пользователя
   const currentUser = useContext(CurrentUserContext);
 

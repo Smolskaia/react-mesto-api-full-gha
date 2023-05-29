@@ -13,8 +13,8 @@ module.exports.getCards = (req, res, next) => {
   Card.find({})
   // Чтобы получить всю информацию об авторе карточки,
   // нужно вызвать метод populate, передав ему имя поля 'owner'
-    .populate('owner')
-    .then((cards) => res.send({ data: cards }))
+    // .populate('owner')
+    .then((cards) => res.send(cards))
     .catch(next);
 };
 
@@ -26,7 +26,7 @@ module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
 
   Card.create({ name, link, owner: req.user._id })
-    .then((card) => res.status(201).send({ data: card }))
+    .then((card) => res.status(201).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return next(new BadRequestError('Incorrect card data'));
@@ -44,7 +44,7 @@ module.exports.deleteCard = (req, res, next) => {
       if (card.owner.toString() !== req.user._id) {
         return next(new ForbiddenError('You can not delete card wich was added by other user'));
       }
-      return Card.findByIdAndDelete(req.params.cardId).then(() => res.send({ data: card }));
+      return Card.findByIdAndDelete(req.params.cardId).then(() => res.send(card));
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -67,7 +67,7 @@ module.exports.likeCard = (req, res, next) => {
       if (!card) {
         return next(new NotFoundError('Card id not found'));
       }
-      return res.send({ data: card });
+      return res.send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -88,7 +88,7 @@ module.exports.dislikeCard = (req, res, next) => {
         return next(new NotFoundError('Card id not found'));
       }
 
-      return res.send({ data: card });
+      return res.send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
