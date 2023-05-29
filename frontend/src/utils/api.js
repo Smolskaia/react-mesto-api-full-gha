@@ -1,6 +1,6 @@
 const apiConfig = {
-  baseUrl: "http://localhost:3000",
-  // baseUrl: "https://api.ideafix.nomoredomains.rocks",
+  // baseUrl: "http://localhost:3000",
+  baseUrl: "https://api.ideafix.nomoredomains.rocks",
   // headers: {
   //   "Content-Type": "application/json",
   // },
