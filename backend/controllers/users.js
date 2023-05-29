@@ -4,6 +4,7 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/notFoundError');
 const BadRequestError = require('../errors/badRequestError');
 const ConflictError = require('../errors/conflictError');
+const { JWT_SECRET } = require('../config');
 
 const getUsers = (req, res, next) => {
   User.find({})
@@ -122,7 +123,7 @@ const login = (req, res, next) => {
     // создадим токен сроком на неделю.
     // В пейлоуд токена записываем только свойство _id,
     // которое содержит идентификатор пользователя
-      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, process.env.NODE_ENV !== 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
       res.send({ token }); // отправка токена в теле ответа
     })
     .catch(next);

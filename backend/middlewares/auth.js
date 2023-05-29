@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const UnauthorizedError = require('../errors/unauthorizedError');
 
+const { JWT_SECRET } = require('../config');
+
 module.exports = (req, res, next) => {
   // достаём авторизационный заголовок
   const { authorization } = req.headers;
@@ -27,7 +29,7 @@ module.exports = (req, res, next) => {
     Метод jwt.verify вернёт пейлоуд токена, если тот прошёл проверку.
      Если же с токеном что-то не так, вернётся ошибка.
      Чтобы её обработать, нужно обернуть метод jwt.verify в try...catch */
-    payload = jwt.verify(token, 'some-secret-key');
+    payload = jwt.verify(token, process.env.NODE_ENV !== 'production' ? JWT_SECRET : 'dev-secret');
   } catch (err) {
     // отправим ошибку, если не получилось
     return next(new UnauthorizedError('Authorization required'));

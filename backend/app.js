@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
@@ -7,8 +8,8 @@ const cookieParser = require('cookie-parser');
 const router = require('./routes/index');
 const { handleErrors } = require('./middlewares/handleErrors');
 
-// Слушаем 3000 порт
-const { PORT = 3000 } = process.env;
+const { PORT, DB_ADDRESS } = require('./config');
+
 // создаем инстанс сервера
 const app = express();
 // добавить cors как мидлвар
@@ -16,9 +17,14 @@ app.use(cors());
 
 app.use(express.json());
 app.use(helmet());
-app.use(cookieParser()); // подключаем парсер кук как мидлвэр
-mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
-
+app.use(cookieParser());
+mongoose.connect(DB_ADDRESS);
+// Краш-тест сервера
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
 // подключаем маршруты
 app.use('/', router);
 
