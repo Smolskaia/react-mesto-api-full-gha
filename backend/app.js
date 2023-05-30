@@ -7,6 +7,7 @@ const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const router = require('./routes/index');
 const { handleErrors } = require('./middlewares/handleErrors');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const { PORT, DB_ADDRESS } = require('./config');
 
@@ -25,7 +26,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
 app.use(express.json());
 app.use(helmet());
 app.use(cookieParser());
@@ -36,9 +36,9 @@ app.get('/crash-test', () => {
     throw new Error('Сервер сейчас упадёт');
   }, 0);
 });
-// подключаем маршруты
-app.use('/', router);
-
+app.use(requestLogger);// подключаем логгер запросов до всех обработчиков роутов
+app.use('/', router);// подключаем маршруты
+app.use(errorLogger);// подключаем логгер ошибок после обработчиков роутов и до обработчиков ошибок
 app.use(errors()); // обработчик ошибок celebrate
 app.use(handleErrors); // централизованный обработчик
 // запускаем сервер на порте 300
