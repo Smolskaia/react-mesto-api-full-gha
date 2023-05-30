@@ -26,6 +26,7 @@ class Api {
   getInitialCards() {
     const token = localStorage.getItem('jwt');
     return fetch(`${this._baseUrl}/cards`, {
+      credentials: true,
       headers: { 
         authorization: `Bearer ${token}`,
       },
@@ -36,6 +37,7 @@ class Api {
   getUserInfo() {
     const token = localStorage.getItem('jwt');
     return fetch(`${this._baseUrl}/users/me`, {
+      credentials: true,
       headers: { 
         authorization: `Bearer ${token}`,
       },
@@ -47,6 +49,7 @@ class Api {
     const token = localStorage.getItem('jwt');
     return fetch(`${this._baseUrl}/users/me`, {
       method: "PATCH",
+      credentials: true,
       headers: { 
         authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -64,6 +67,7 @@ class Api {
 
     return fetch(`${this._baseUrl}/cards`, {
       method: "POST",
+      credentials: true,
       headers: { 
         authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -101,6 +105,7 @@ class Api {
     const token = localStorage.getItem('jwt');
     return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: isLiked ? "PUT" : "DELETE",
+      credentials: true,
       headers: { 
         authorization: `Bearer ${token}`,
       },
@@ -111,6 +116,7 @@ class Api {
   deleteCard(cardId) {
     const token = localStorage.getItem('jwt');
     return fetch(`${this._baseUrl}/cards/${cardId}`, {
+      credentials: true,
       method: "DELETE",
       headers: { 
         authorization: `Bearer ${token}`,
@@ -122,6 +128,7 @@ class Api {
   setAvatar(avatarLink) {
     const token = localStorage.getItem('jwt');
     return fetch(`${this._baseUrl}/users/me/avatar`, {
+      credentials: true,
       method: "PATCH",
       headers: { 
         authorization: `Bearer ${token}`,
