@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
 const cors = require('cors');
@@ -9,7 +10,9 @@ const router = require('./routes/index');
 const { handleErrors } = require('./middlewares/handleErrors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
-const { PORT, DB_ADDRESS } = require('./config');
+const { PORT, DB_ADDRESS, LIMITER_OPTIONS } = require('./config');
+
+const limiter = rateLimit(LIMITER_OPTIONS);
 
 // создаем инстанс сервера
 const app = express();
@@ -37,6 +40,9 @@ app.get('/crash-test', () => {
   }, 0);
 });
 app.use(requestLogger);// подключаем логгер запросов до всех обработчиков роутов
+// лимитер запросов для ограничения количества запросов к API
+// Его стоит подключать после логера запросов, иначе заблокированные запросы не будут записаны
+app.use(limiter);
 app.use('/', router);// подключаем маршруты
 app.use(errorLogger);// подключаем логгер ошибок после обработчиков роутов и до обработчиков ошибок
 app.use(errors()); // обработчик ошибок celebrate
